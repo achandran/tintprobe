@@ -86,7 +86,7 @@ def main():
         reports.append({'theme':adapter,'captures':len(shots),'checks':checks})
         (args.output/(adapter['id']+'.cells.json')).write_text(json.dumps(shots,ensure_ascii=False))
     report={'tintprobe_version':__import__('tintprobe').__version__,'render_profile':json.loads((evaluation_path('render-profile.json')).read_text()),'mode':'original-theme','nvim':subprocess.check_output([args.nvim,'--version'],text=True).splitlines()[0],
-        'corpus_sha256':hashlib.sha256(json.dumps(cases,sort_keys=True).encode()+b''.join((EVALUATION / c[s]).read_bytes() for c in cases for s in ('before','after'))).hexdigest(),
+        'corpus_sha256':hashlib.sha256(json.dumps(cases,sort_keys=True).encode()+b''.join(evaluation_path(c[s]).read_bytes() for c in cases for s in ('before','after'))).hexdigest(),
         'themes':reports,'coverage':{'neovim':'Tree-sitter and BasedPyright' if runtime else 'builtin syntax, initial viewport','codex':'not run by comparison runner','ghostty':'not requested; native desktop capture is separate','treesitter_lsp':json.loads((evaluation_path('python-runtime.json')).read_text()) if runtime else 'not run','comfort':'unverified'},
         'interpretation':'Contrast flags are observations, not a theme ranking. Background contrast does not measure hue separation. Browser cell reconstructions are not terminal screenshots.'}
     (args.output/'report.json').write_text(json.dumps(report,indent=2))

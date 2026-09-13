@@ -60,7 +60,9 @@ def capture(case, width, state, nvim_bin, kanso, adapter=None, python_runtime=No
         n.exec_lua(selected['setup'])
         highlights = n.exec_lua("local out={}; for _,name in ipairs({'Normal','Visual','Search','DiffAdd','DiffDelete','DiffChange','DiffText'}) do out[name]=vim.api.nvim_get_hl(0,{name=name,link=false}) end; return out")
         n.command('filetype on'); n.command('syntax on')
-        before = EVALUATION / case['before']; after = EVALUATION / case['after']
+        before = evaluation_path(case['before']); after = evaluation_path(case['after'])
+        # Keep native filename labels independent of checkout/install paths.
+        n.command('cd '+n.funcs.fnameescape(str(before.parent)))
         n.command('edit '+n.funcs.fnameescape(str(before)))
         n.command('setlocal filetype='+case['filetype'])
         n.command('diffthis')

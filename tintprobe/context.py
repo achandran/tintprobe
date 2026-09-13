@@ -18,8 +18,13 @@ CONFIG = json.loads(config_path.read_text()) if config_path.exists() else {}
 DEFAULT_THEME = CONFIG.get('default_theme', 'default')
 
 
+def evaluation_output(relative):
+    """Project-owned paths for outputs/caches, never packaged resources."""
+    return ROOT / CONFIG.get('evaluation_dir', 'evaluation') / relative
+
+
 def evaluation_path(relative):
-    local = ROOT / 'evaluation' / relative
+    local = evaluation_output(relative)
     return local if local.exists() else EVALUATION / relative
 
 

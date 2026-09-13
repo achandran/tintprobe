@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import subprocess
 import tempfile
-from tintprobe.context import ROOT
+from tintprobe.context import ROOT, CONFIG
 
 
 def validate(deps):
@@ -72,8 +72,8 @@ def dependencies(themes=None, build_only=False):
                 add(d)
         py = json.loads((evaluation_path('python-runtime.json')).read_text())
         codex = json.loads((evaluation_path('sources.json')).read_text())['codex']
-        add({'path': 'evaluation/deps/tree-sitter-python', 'url': py['tree_sitter_source'], 'revision': py['tree_sitter_revision']})
-        add({'path': 'evaluation/deps/codex', 'url': codex['repository'], 'revision': codex['revision']})
+        add({'path': CONFIG.get('evaluation_dir', 'evaluation') + '/deps/tree-sitter-python', 'url': py['tree_sitter_source'], 'revision': py['tree_sitter_revision']})
+        add({'path': CONFIG.get('evaluation_dir', 'evaluation') + '/deps/codex', 'url': codex['repository'], 'revision': codex['revision']})
     return result
 
 

@@ -1,3 +1,4 @@
+from tintprobe.context import evaluation_output
 from tintprobe.context import workflow
 from tintprobe.context import evaluation_path, script_path, project_resource, EVALUATION, port_path, default_adapter, DEFAULT_THEME
 """One command for supported theme comparisons and native Codex evaluations."""
@@ -88,7 +89,7 @@ def write_index(out,report):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--codex-source',type=Path,required=True);p.add_argument('--python-source',type=Path,required=True)
-    p.add_argument('--manifest',type=Path,default=evaluation_path('themes.json'));p.add_argument('--output',type=Path,default=ROOT/'evaluation/results/suite')
+    p.add_argument('--manifest',type=Path,default=evaluation_path('themes.json'));p.add_argument('--output',type=Path,default=evaluation_output('results/suite'))
     p.add_argument('--ghostty',action='store_true',help='Prepare terminal command fixtures and track native Ghostty coverage')
     p.add_argument('--ghostty-capture',action='store_true',help='Run native macOS Ghostty capture; requires authorized UI access')
     p.add_argument('--fresh-run',action='store_true',help='Write to a unique run folder to avoid stale evidence')

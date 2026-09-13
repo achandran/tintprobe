@@ -52,3 +52,11 @@ any engine modules, or set `TINTPROBE_PROJECT_ROOT` before importing the Python 
 `contracts.ordinary_weight_diffs: true` enforces ordinary weight and no underline
 in the native Ghostty diff check. It is opt-in; themes may otherwise use their
 original emphasis styles. Adapters may specify `background: "dark"` for dark themes.
+
+Set `evaluation_dir` in `tintprobe.json` to relocate project evaluation inputs,
+default report outputs, and the automatically prepared Codex/Python source caches
+(e.g. `"evaluation_dir": "tests/evaluation"`). The default remains `evaluation`.
+Missing input files still fall back to packaged fixtures and defaults. Paths in
+your theme/plugin manifests remain relative to the project root; update those
+explicit paths when moving their dependency checkouts. Output paths never fall
+back to the installed package.

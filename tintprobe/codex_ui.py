@@ -1,3 +1,4 @@
+from tintprobe.context import evaluation_output
 from tintprobe.context import evaluation_path, script_path, project_resource, EVALUATION, port_path, default_adapter, DEFAULT_THEME
 """Evaluate stock Codex status and composer cells across timed effort transitions."""
 import argparse
@@ -12,7 +13,7 @@ from tintprobe.codex_native import color, write_gallery
 from tintprobe.context import ROOT, load_palette, wcag
 
 from tintprobe.context import CONFIG
-PROFILE = ROOT / CONFIG.get('ports', {}).get('codex_config', 'evaluation/codex.toml')
+PROFILE = ROOT / CONFIG['ports']['codex_config'] if CONFIG.get('ports', {}).get('codex_config') else evaluation_output('codex.toml')
 
 
 def animations_enabled():
@@ -153,7 +154,7 @@ def run(source, output, *, animated_control=False):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, required=True)
-    parser.add_argument('--output', type=Path, default=ROOT/'evaluation/results/codex-ui')
+    parser.add_argument('--output', type=Path, default=evaluation_output('results/codex-ui'))
     parser.add_argument('--animated-control', action='store_true', help='Negative control: enable stock animations in the isolated replay only')
     args = parser.parse_args()
     result = run(args.source, args.output, animated_control=args.animated_control)

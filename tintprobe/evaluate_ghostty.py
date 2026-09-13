@@ -1,3 +1,4 @@
+from tintprobe.context import evaluation_output
 from tintprobe.context import CONFIG
 from tintprobe.context import evaluation_path, script_path, project_resource, EVALUATION, port_path, default_adapter, DEFAULT_THEME
 """Prepare real terminal-command evidence; require native captures for acceptance."""
@@ -144,7 +145,7 @@ def prepare(output, native_capture=False, cases=None, codex_cells=None):
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, default=ROOT/'evaluation/results/ghostty')
+    parser.add_argument('--output', type=Path, default=evaluation_output('results/ghostty'))
     parser.add_argument('--capture', action='store_true', help='Launch and capture isolated native Ghostty windows on an authorized macOS host')
     parser.add_argument('--cases', nargs='+', help='Capture only these case IDs plus the glyph reference; omitted coverage stays explicit')
     parser.add_argument('--codex-cells',type=Path,help='Recorded native Codex flow cells and sibling passing report for the current theme')

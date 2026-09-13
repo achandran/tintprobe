@@ -1,3 +1,4 @@
+from tintprobe.context import evaluation_output
 from tintprobe.context import evaluation_path, script_path, project_resource, EVALUATION, port_path, default_adapter, DEFAULT_THEME
 """Compare original Neovim themes with identical fixtures; never recolor captures."""
 import argparse
@@ -59,7 +60,7 @@ def render(shot):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--manifest',type=Path,default=evaluation_path('themes.json'))
-    p.add_argument('--output',type=Path,default=ROOT/'evaluation/results/comparison')
+    p.add_argument('--output',type=Path,default=evaluation_output('results/comparison'))
     p.add_argument('--python-source',type=Path,help='Pinned tree-sitter-python checkout; enables Python Tree-sitter/LSP corpus')
     p.add_argument('--strict-gates',action='store_true',help='Fail if any theme fails the experimental gates')
     p.add_argument('--themes',nargs='+');p.add_argument('--nvim',default=shutil.which('nvim'))

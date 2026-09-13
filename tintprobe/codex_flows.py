@@ -1,3 +1,4 @@
+from tintprobe.context import evaluation_output
 from tintprobe.context import evaluation_path, script_path, project_resource, EVALUATION, port_path, default_adapter, DEFAULT_THEME
 """Replay deterministic upstream ChatWidget events; no model calls or commands run."""
 import argparse,json,os,subprocess,hashlib
@@ -54,5 +55,5 @@ def run(source,output,theme=None,palette=None):
     (output/'report.json').write_text(json.dumps(report,indent=2));return report
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--output',type=Path,default=ROOT/'evaluation/results/codex-flows');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--output',type=Path,default=evaluation_output('results/codex-flows'));a=p.parse_args()
     print(json.dumps(run(a.source.resolve(),a.output.resolve()),indent=2))

@@ -63,10 +63,10 @@ def capture(case, width, state, nvim_bin, kanso, adapter=None, python_runtime=No
         before = evaluation_path(case['before']); after = evaluation_path(case['after'])
         # Keep native filename labels independent of checkout/install paths.
         n.command('cd '+n.funcs.fnameescape(str(before.parent)))
-        n.command('edit '+n.funcs.fnameescape(str(before)))
+        n.command('edit '+n.funcs.fnameescape(os.path.relpath(before, before.parent)))
         n.command('setlocal filetype='+case['filetype'])
         n.command('diffthis')
-        n.command('vsplit '+n.funcs.fnameescape(str(after)))
+        n.command('vsplit '+n.funcs.fnameescape(os.path.relpath(after, before.parent)))
         n.command('setlocal filetype='+case['filetype'])
         n.command('diffthis')
         n.command('setlocal nofoldenable')

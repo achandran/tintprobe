@@ -51,3 +51,19 @@ assert json.loads(evaluation_path('rubric.json').read_text())['custom']
 def test_command_help_reaches_the_adapter(tmp_path):
     result = isolated(tmp_path, "import subprocess, sys; subprocess.run([sys.executable, '-m', 'tintprobe', 'compare', '--help'], check=True)")
     assert '--manifest' in result.stdout
+
+
+def test_native_capture_has_portable_filename_labels():
+    import shutil
+    import pytest
+    from tintprobe.evaluate_theme import capture
+    nvim = shutil.which('nvim')
+    if not nvim:
+        pytest.skip('Neovim is required for native capture')
+    shot = capture({'id': 'portable', 'before': 'fixtures/readme/before.py',
+                    'after': 'fixtures/readme/after.py', 'filetype': 'python'},
+                   160, 'diff', nvim, None,
+                   {'paths': [], 'setup': "vim.cmd('colorscheme default')", 'background': 'dark'})
+    text = ''.join(c['text'] for c in shot['cells'])
+    assert 'before.py' in text and 'after.py' in text
+    assert 'fixtures/readme' not in text and 'site-packages' not in text

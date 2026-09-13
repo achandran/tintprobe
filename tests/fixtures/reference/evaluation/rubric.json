@@ -1,0 +1,72 @@
+{
+  "version": "0.3.0",
+  "status": "experimental; not calibrated against human performance",
+  "text_contrast_target": 4.5,
+  "weights": {
+    "text_readability": 0.5,
+    "inline_distinction": 0.35,
+    "line_distinction": 0.15
+  },
+  "aggregation": "Mean per fixture and width, then weighted components; missing components yield no total",
+  "limitations": [
+    "Background targets are engineering heuristics, not accessibility standards",
+    "Typography distinction is not scored",
+    "No long-session fatigue inference",
+    "Native Neovim built-in syntax only"
+  ],
+  "inline_oracles": {
+    "punctuation": [
+      {
+        "side": "before",
+        "line": 1,
+        "byte": 11,
+        "text": "="
+      },
+      {
+        "side": "after",
+        "line": 1,
+        "byte": 11,
+        "text": "!"
+      }
+    ],
+    "unicode": [
+      {
+        "side": "before",
+        "line": 1,
+        "byte": 6,
+        "text": "2"
+      },
+      {
+        "side": "after",
+        "line": 1,
+        "byte": 6,
+        "text": "3"
+      }
+    ],
+    "whitespace": [
+      {
+        "side": "before",
+        "line": 1,
+        "byte": 8,
+        "text": " "
+      },
+      {
+        "side": "after",
+        "line": 1,
+        "byte": 13,
+        "text": " "
+      }
+    ],
+    "ghosttyconfig": [
+      {
+        "side": "before",
+        "line": 15,
+        "byte": 28,
+        "text": "l"
+      }
+    ]
+  },
+  "inline_delta_e_target": 15,
+  "line_delta_e_target": 5,
+  "critical_inline_delta_e_min": 5
+}

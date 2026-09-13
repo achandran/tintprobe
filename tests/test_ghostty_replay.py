@@ -1,3 +1,4 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import hashlib
 import json
 from pathlib import Path
@@ -6,8 +7,8 @@ import sys
 import pytest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from ghostty_replay import fixtures
-from ithilienlib import ROOT
+from tintprobe.ghostty_replay import fixtures
+from tintprobe.context import ROOT
 
 
 def source(tmp_path,modifiers='BOLD | DIM'):
@@ -15,7 +16,7 @@ def source(tmp_path,modifiers='BOLD | DIM'):
     path.write_text(json.dumps([{'file':'request','width':60,'cells':[
         {'row':0,'col':0,'text':'=','fg':'Rgb(0, 0, 0)','bg':'Reset','modifiers':modifiers}]}]))
     (tmp_path/'report.json').write_text(json.dumps({'status':'pass','source_revision':'fixture',
-        'theme_sha256':hashlib.sha256((ROOT/'extras/codex/themes/ithilien-dawn.tmTheme').read_bytes()).hexdigest()}))
+        'theme_sha256':hashlib.sha256((port_path('codex_theme')).read_bytes()).hexdigest()}))
     return path
 
 

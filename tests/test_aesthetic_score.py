@@ -1,13 +1,14 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import copy,sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from aesthetic_score import evaluate
-from ithilienlib import load_palette
+from tintprobe.aesthetic_score import evaluate
+from tintprobe.context import load_palette
 
 class AestheticScore(unittest.TestCase):
     entry={'aesthetic_profile':'formex-reef-gmt-white-steel'}
     def setUp(self):
-        self.palette=load_palette('ithilien-dawn')
+        self.palette=load_palette()
         self.cells=[{'text':'x','fg':'Reset','bg':'Reset','modifiers':''} for _ in range(200)]
         self.cells[0]['fg']='Rgb(163, 55, 62)'
     def score(self,p=None,cells=None):

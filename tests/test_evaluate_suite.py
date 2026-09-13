@@ -1,7 +1,8 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import unittest,sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from evaluate_suite import execution_failed
+from tintprobe.evaluate_suite import execution_failed
 class SuiteStatus(unittest.TestCase):
     def test_quality_failure_is_not_execution_failure(self):
         r={'stages':{'neovim':{'status':'pass'}},'themes':[{'codex_diff':{'captures':60,'status':'fail'}}]}
@@ -13,12 +14,12 @@ class SuiteStatus(unittest.TestCase):
         self.assertTrue(execution_failed({'stages':{'neovim':{'status':'fail'}},'themes':[]}))
 
     def test_blocked_workflow_is_not_pass(self):
-        from evaluate_suite import workflow_status
+        from tintprobe.evaluate_suite import workflow_status
         self.assertEqual(workflow_status({'pass':False,'results':[{'pass':False,'status':'blocked'}]}),'blocked')
         self.assertEqual(workflow_status({'pass':False,'results':[{'pass':False,'status':'blocked'},{'pass':False,'status':'fail'}]}),'fail')
 
     def test_missing_dependency_is_recorded(self):
-        from evaluate_suite import run_workflow
+        from tintprobe.evaluate_suite import run_workflow
         r={'stages':{},'themes':[]}
         def missing():raise FileNotFoundError('dependency absent')
         run_workflow(r,'native',missing)
@@ -26,12 +27,12 @@ class SuiteStatus(unittest.TestCase):
         self.assertTrue(execution_failed(r))
 
     def test_empty_workflow_cannot_pass(self):
-        from evaluate_suite import workflow_status
+        from tintprobe.evaluate_suite import workflow_status
         self.assertEqual(workflow_status({'pass':True,'results':[]}),'fail')
 
     def test_gallery_lists_native_profiles(self):
         import tempfile
-        from evaluate_suite import write_index
+        from tintprobe.evaluate_suite import write_index
         with tempfile.TemporaryDirectory() as tmp:
             out=Path(tmp);(out/'pickers').mkdir();(out/'pickers/gallery.html').write_text('fixture')
             write_index(out,{'themes':[],'stages':{'pickers':{'status':'pass','gallery':'pickers/gallery.html'},'codex':{'status':'blocked','reason':'cargo absent'}}})
@@ -41,7 +42,7 @@ class SuiteStatus(unittest.TestCase):
 
     def test_quality_gate_failure_rejects_successful_capture(self):
         import json,tempfile
-        from evaluate_suite import finalize
+        from tintprobe.evaluate_suite import finalize
         with tempfile.TemporaryDirectory() as tmp:
             out=Path(tmp)
             for name in ('neovim','python'):
@@ -53,7 +54,7 @@ class SuiteStatus(unittest.TestCase):
             self.assertEqual(r['stages']['neovim']['quality_status'],'fail')
 
     def test_permission_failure_is_blocked_not_silently_passed(self):
-        from evaluate_suite import interaction_status
+        from tintprobe.evaluate_suite import interaction_status
         error='fzf did not render a live result list: operation not permitted'
         r={'results':[{'errors':[error]}]}
         self.assertEqual(interaction_status(r),'blocked')
@@ -62,7 +63,7 @@ class SuiteStatus(unittest.TestCase):
 
     def test_missing_theme_dependency_is_actionable(self):
         import tempfile
-        from compare_themes import check_adapter
+        from tintprobe.compare_themes import check_adapter
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaisesRegex(FileNotFoundError, 'Missing theme dependency'):
                 check_adapter({'paths':[str(Path(tmp)/'absent')], 'pins':{}})
@@ -70,17 +71,17 @@ class SuiteStatus(unittest.TestCase):
     def test_missing_dependencies_do_not_prevent_ghostty_report(self):
         import json,tempfile
         from unittest.mock import patch
-        import evaluate_suite
+        import tintprobe.evaluate_suite as evaluate_suite
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);manifest=root/'themes.json';out=root/'out'
             manifest.write_text(json.dumps([{'id':'fixture','paths':[str(root/'absent')]}]))
             argv=['suite','--manifest',str(manifest),'--output',str(out),'--codex-source',str(root/'codex'),
                   '--python-source',str(root/'python'),'--nvim','nvim','--ghostty']
             ghostty={'status':'blocked','reason':'capture unavailable','coverage':{'native_pixels':'blocked'}}
-            with patch.object(sys,'argv',argv), patch('evaluate_suite.shutil.which',return_value=None), \
-                 patch('evaluate_interactions.run',side_effect=FileNotFoundError('missing dependency')), \
-                 patch('validate_evaluator.run',side_effect=FileNotFoundError('missing dependency')), \
-                 patch('evaluate_ghostty.prepare',return_value=ghostty):
+            with patch.object(sys,'argv',argv), patch('tintprobe.evaluate_suite.shutil.which',return_value=None), \
+                 patch('tintprobe.evaluate_interactions.run',side_effect=FileNotFoundError('missing dependency')), \
+                 patch('tintprobe.validate_evaluator.run',side_effect=FileNotFoundError('missing dependency')), \
+                 patch('tintprobe.evaluate_ghostty.prepare',return_value=ghostty):
                 self.assertEqual(evaluate_suite.main(),1)
             report=json.loads((out/'report.json').read_text())
             self.assertEqual(report['stages']['neovim']['status'],'blocked')
@@ -90,7 +91,7 @@ class SuiteStatus(unittest.TestCase):
 
 
 def test_blocked_renderers_do_not_claim_quality_failure(tmp_path):
-    from evaluate_suite import finalize
+    from tintprobe.evaluate_suite import finalize
     report={'stages':{name:{'status':'blocked'} for name in ('neovim','python','interactions')},'themes':[]}
     assert finalize(report,tmp_path,True)
     assert all(s['quality_status']=='unverified' for s in report['stages'].values())
@@ -99,7 +100,7 @@ def test_blocked_renderers_do_not_claim_quality_failure(tmp_path):
 
 def test_unverified_stock_ui_contrast_blocks_strict_acceptance(tmp_path):
     import json
-    from evaluate_suite import finalize
+    from tintprobe.evaluate_suite import finalize
     for name in ('neovim', 'python'):
         (tmp_path/name).mkdir()
         (tmp_path/name/'scorecard.json').write_text(json.dumps({'results': []}))

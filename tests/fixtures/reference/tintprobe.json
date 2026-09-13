@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "default_theme": "ithilien-dawn",
+  "palettes": {
+    "shared": "palette/ithilien-shared.json",
+    "variants": {
+      "ithilien-dawn": "palette/ithilien-dawn.json",
+      "ithilien-dusk": "palette/ithilien-dusk.json"
+    }
+  },
+  "ports": {
+    "ghostty": "extras/ghostty/themes/ithilien_dawn.conf",
+    "codex_theme": "extras/codex/themes/ithilien-dawn.tmTheme",
+    "codex_config": "extras/codex/config.toml",
+    "zsh": "extras/shell/ithilien-dawn.zsh"
+  },
+  "workflow_dir": "tests/workflows",
+  "default_adapter": {
+    "id": "ithilien-dawn",
+    "paths": [
+      ".",
+      "evaluation/deps/kanso"
+    ],
+    "setup": "require('ithilien').load('dawn')",
+    "after_diff": "require('ithilien.diff').refresh()"
+  },
+  "contracts": {
+    "ordinary_weight_diffs": true
+  }
+}

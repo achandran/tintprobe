@@ -1,6 +1,6 @@
 # Stock Codex UI validation
 
-Ithilien keeps the stock Codex binary. `extras/codex/config.toml` sets
+A project may provide a Codex configuration profile through `ports.codex_config` that sets
 `tui.animations = false`, the supported motion preference documented in the
 [official configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
 Merge this setting into your Codex config manually, preserving other settings,
@@ -8,7 +8,7 @@ and restart Codex. The evaluator reads the repository profile directly; it does
 not edit your installed configuration.
 
 This removes the stock status shimmer and effort-change composer particles. The
-palette and generated Dawn/Dusk theme files are unchanged. Stock Codex's TextMate
+project palette and exported theme files are unchanged. Stock Codex's TextMate
 theme controls syntax highlighting, not separate transcript metadata colors or
 the composer border. The composer and past user messages retain their shared
 stock surface. These limitations are recorded in the UI evaluation report.
@@ -17,12 +17,12 @@ Run the targeted evaluation with the pinned Codex source and Rust runtime used
 by the main suite:
 
 ```sh
-make evaluate-codex-ui
+uv run tintprobe codex-ui --source evaluation/deps/codex
 ```
 
 It also requires `just` and `cargo-nextest`, following the pinned source's test
-instructions. `make evaluate` includes the same UI stage. The runner temporarily
-adds test instrumentation and configures the test helper from `extras/codex/config.toml`;
+instructions. `uv run tintprobe suite` includes the same UI stage. The runner temporarily
+adds test instrumentation and configures the test helper from the configured `ports.codex_config`;
 it restores both upstream test files even on failure. Production renderer files
 are never patched. Do not evaluate concurrently against the same checkout.
 
@@ -53,8 +53,8 @@ to distinguish it from rendered stroke contrast.
 For a native negative control that enables animations only in the isolated test:
 
 ```sh
-make evaluate-codex-ui CODEX_UI_ARGS=--animated-control \
-  CODEX_UI_OUTPUT=evaluation/results/codex-ui-animated-control
+uv run tintprobe codex-ui --source evaluation/deps/codex --animated-control \
+  --output evaluation/results/codex-ui-animated-control
 ```
 
 On September 12, 2026 this control failed at a minimum nominal text contrast of

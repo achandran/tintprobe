@@ -1,11 +1,12 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import copy,json,sys,unittest
 from pathlib import Path
-ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'scripts'))
-from evaluation_gates import evaluate_gates
+ROOT=TEST_ROOT;sys.path.insert(0,str(ROOT/'scripts'))
+from tintprobe.evaluation_gates import evaluate_gates
 
 class GateMutations(unittest.TestCase):
     def setUp(self):
-        self.r=json.loads((ROOT/'evaluation/rubric.json').read_text())
+        self.r=json.loads((evaluation_path('rubric.json')).read_text())
         self.r['inline_oracles']={'sample':[{'side':'before','line':1,'byte':2,'text':'x'}]}
         self.s={'case':'sample','width':100,'state':'diff','defaults':{'fg':0,'bg':0xffffff},'attrs':{1:{'foreground':0,'background':0xeeeeee},2:{'foreground':0,'background':0xaaaaaa}},'cells':[{'row':0,'col':0,'attr':1,'text':'a'},{'row':0,'col':1,'attr':2,'text':'x'}],'regions':[{'row':0,'col':0,'side':'before','source_line':1,'source_byte':1,'text':'a','group':'DiffChange'},{'row':0,'col':1,'side':'before','source_line':1,'source_byte':2,'text':'x','group':'DiffText'}]}
     def gates(self,shots):return {f['gate'] for f in evaluate_gates(shots,self.r)['failures']}
@@ -37,6 +38,6 @@ class GateMutations(unittest.TestCase):
         self.assertIn('inline_cue_review',self.gates([self.s]))
         self.assertNotIn('critical_inline_background',self.gates([self.s]))
     def test_bold_space_is_not_visible_emphasis(self):
-        from evaluation_gates import alternative_inline_cues
+        from tintprobe.evaluation_gates import alternative_inline_cues
         self.s['highlights']={'DiffText':{'bold':True},'DiffChange':{}}
         self.assertEqual(alternative_inline_cues(self.s,{'text':' '}),[])

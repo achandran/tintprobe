@@ -1,14 +1,15 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 from PIL import Image,ImageDraw,ImageFont
-from ghostty_interactions import shape_check,selection_check,blink_gate,drag_points,fixtures,CURSOR_CODES
-from ghostty_quality import ansi_cells
+from tintprobe.ghostty_interactions import shape_check,selection_check,blink_gate,drag_points,fixtures,CURSOR_CODES
+from tintprobe.ghostty_quality import ansi_cells
 from test_ghostty_native_cursor import specimen
 
 
 def test_inactive_outline_requires_outline_and_intact_glyph():
-    from ghostty_interactions import inactive_check
+    from tintprobe.ghostty_interactions import inactive_check
     im,g,p,ref,cell=specimen();draw=ImageDraw.Draw(im)
     draw.rectangle((0,48,11,71),fill=p['backgrounds']['base'],outline=p['highlight']['cursor'])
     draw.text((0,48),'=',font=ImageFont.load_default_imagefont(),fill='black')
@@ -50,7 +51,7 @@ def selection_fixture():
     _,g,p,ref,_=specimen();text='a <= b\nc >= d\n';cells,lines=ansi_cells(text,p)
     spec={'start':[0,2],'end':[1,4]}
     im=Image.new('RGB',(1440,120),p['backgrounds']['base']);d=ImageDraw.Draw(im)
-    from ghostty_interactions import selected
+    from tintprobe.ghostty_interactions import selected
     for row in range(3):
         for col in range(120):
             if selected(spec,row,col):d.rectangle((col*12,(row+2)*24,col*12+11,(row+3)*24-1),fill=p['highlight']['background'])
@@ -112,7 +113,7 @@ def test_fixtures_and_retina_coordinates_are_explicit(tmp_path):
 
 def test_emitter_requests_native_shapes_without_painting(tmp_path):
     import subprocess
-    from capture_ghostty import write_launcher
+    from tintprobe.capture_ghostty import write_launcher
     payload=tmp_path/'text';payload.write_text('a=b\n')
     for style,code in CURSOR_CODES.items():
         ready=tmp_path/'ready';release=tmp_path/'release';release.touch()
@@ -125,7 +126,7 @@ def test_emitter_requests_native_shapes_without_painting(tmp_path):
 
 def test_transition_emitter_acknowledges_each_native_mode(tmp_path):
     import subprocess,time,json
-    from capture_ghostty import write_launcher
+    from tintprobe.capture_ghostty import write_launcher
     payload=tmp_path/'text';payload.write_text('a=b\n')
     ready=tmp_path/'ready';release=tmp_path/'release';control=tmp_path/'control'
     launcher,_,log=write_launcher(tmp_path,'transition',payload,ready,release,{'row':0,'column':1,'style':'steady-bar'},control)
@@ -151,7 +152,7 @@ def test_transition_emitter_acknowledges_each_native_mode(tmp_path):
 
 def test_full_capture_assessment_cannot_bypass_selection_gate(tmp_path,monkeypatch):
     import json,subprocess
-    from ghostty_quality import assess_capture
+    from tintprobe.ghostty_quality import assess_capture
     im,g,p,ref,cells,lines,spec=selection_fixture()
     d=ImageDraw.Draw(im)
     for i,color in enumerate(list(p['ansi'].values())[1:7]):d.rectangle((i*72,0,i*72+71,23),fill=color)
@@ -166,8 +167,8 @@ def test_full_capture_assessment_cannot_bypass_selection_gate(tmp_path,monkeypat
 
 
 def test_partial_capture_keeps_accessibility_error(tmp_path,monkeypatch):
-    import capture_ghostty
-    from evaluate_ghostty import prepare
+    import tintprobe.capture_ghostty as capture_ghostty
+    from tintprobe.evaluate_ghostty import prepare
     def interrupted(output,report):
         report['native_captures']=[{'id':'git-status','reason':'partial'}]
         raise RuntimeError('Accessibility permission is unavailable')

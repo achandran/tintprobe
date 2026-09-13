@@ -1,9 +1,10 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import subprocess
 from pathlib import Path
 import sys
 import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
-import evaluation_dependencies as deps
+import tintprobe.evaluation_dependencies as deps
 
 
 def repository(path):

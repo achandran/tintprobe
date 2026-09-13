@@ -5,10 +5,10 @@ The palette remains frozen. These checks identify problems without adjusting col
 Run the interaction audit independently:
 
 ```sh
-uv run python scripts/evaluate_interactions.py --output evaluation/results/interactions
+uv run tintprobe interactions --output evaluation/results/interactions
 ```
 
-The combined `scripts/evaluate_suite.py` also runs it automatically. `--strict-gates` makes measured interaction contrast failures fail the combined suite. Missing captures fail execution even without strict gates.
+The combined `tintprobe suite` also runs it automatically. `--strict-gates` makes measured interaction contrast failures fail the combined suite. Missing captures fail execution even without strict gates.
 
 ## Evidence
 

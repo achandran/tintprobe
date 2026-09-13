@@ -1,14 +1,15 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 from PIL import Image, ImageDraw, ImageFont
-from ghostty_quality import cursor_check
-from ghostty_glyphs import reference_sheet
-from ithilienlib import load_palette
+from tintprobe.ghostty_quality import cursor_check
+from tintprobe.ghostty_glyphs import reference_sheet
+from tintprobe.context import load_palette
 
 
 def specimen():
-    p=load_palette('ithilien-dawn');g={'x':0,'y':0,'cell_width':12,'cell_height':24}
+    p=load_palette();g={'x':0,'y':0,'cell_width':12,'cell_height':24}
     font=ImageFont.load_default_imagefont()
     atlas=Image.new('RGB',(1440,624),p['backgrounds']['base']);draw=ImageDraw.Draw(atlas)
     for c in reference_sheet()[1]:
@@ -42,7 +43,7 @@ def test_real_cursor_gate_requires_fill_and_readable_covered_glyph():
 
 def test_cursor_emitter_positions_actual_terminal_cursor(tmp_path):
     import subprocess
-    from capture_ghostty import write_launcher
+    from tintprobe.capture_ghostty import write_launcher
     payload=tmp_path/'cursor.ansi';payload.write_text('a=b\n')
     ready=tmp_path/'ready';release=tmp_path/'release';release.touch()
     launcher,_,_=write_launcher(tmp_path,'cursor',payload,ready,release,{'row':0,'column':1})

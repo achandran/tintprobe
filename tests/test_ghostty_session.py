@@ -1,3 +1,4 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import json
 from pathlib import Path
 import subprocess
@@ -6,8 +7,8 @@ import sys
 import pytest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-import capture_ghostty as capture
-from ghostty_coverage import synchronize
+import tintprobe.capture_ghostty as capture
+from tintprobe.ghostty_coverage import synchronize
 
 
 def test_cleanup_only_closes_owned_window_and_records_confirmation(tmp_path,monkeypatch):

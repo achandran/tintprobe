@@ -1,14 +1,15 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import sys
 from pathlib import Path
 import pytest
 from PIL import Image, ImageDraw
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from ghostty_quality import ansi_cells, grid, cell_checks, content_gate
-from ithilienlib import load_palette
+from tintprobe.ghostty_quality import ansi_cells, grid, cell_checks, content_gate
+from tintprobe.context import load_palette
 
 
 def specimen():
-    p=load_palette('ithilien-dawn')
+    p=load_palette()
     im=Image.new('RGB',(400,100),p['backgrounds']['base'])
     draw=ImageDraw.Draw(im)
     for i,c in enumerate(list(p['ansi'].values())[1:7]):
@@ -49,7 +50,7 @@ def test_ocr_requires_operator_and_every_line():
 
 
 def test_ansi_preserves_character_positions_and_rejects_unsupported_controls():
-    p=load_palette('ithilien-dawn')
+    p=load_palette()
     cells,lines=ansi_cells('\x1b[31m- a\x1b[0m\n+ b',p)
     assert lines==['- a','+ b']
     assert cells[2]['column']==2 and cells[2]['fg']==list(p['ansi'].values())[1]
@@ -58,7 +59,7 @@ def test_ansi_preserves_character_positions_and_rejects_unsupported_controls():
 
 def test_row_ocr_keeps_operators_strict_and_no_expected_text_hints(tmp_path):
     import json
-    from ghostty_quality import prepare_ocr_rows,row_content_gate
+    from tintprobe.ghostty_quality import prepare_ocr_rows,row_content_gate
     im,p=specimen();g=grid(im,list(p['ansi'].values())[1:7])
     path=prepare_ocr_rows(im,g,['return a <= 3'],tmp_path)
     data=json.loads(path.read_text())
@@ -73,7 +74,7 @@ def test_row_ocr_keeps_operators_strict_and_no_expected_text_hints(tmp_path):
 
 def test_row_crop_does_not_include_adjacent_lines(tmp_path):
     import json
-    from ghostty_quality import prepare_ocr_rows
+    from tintprobe.ghostty_quality import prepare_ocr_rows
     im,p=specimen();g=grid(im,list(p['ansi'].values())[1:7])
     ImageDraw.Draw(im).rectangle((0,60,399,79),fill='#FF00FF')
     path=prepare_ocr_rows(im,g,['first'],tmp_path)

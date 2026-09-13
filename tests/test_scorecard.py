@@ -1,15 +1,16 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import copy
 import json
 from pathlib import Path
 import sys
 import unittest
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=TEST_ROOT
 sys.path.insert(0,str(ROOT/'scripts'))
-from score_themes import score
+from tintprobe.score_themes import score
 
 class ScorecardTests(unittest.TestCase):
     def setUp(self):
-        self.rubric=json.loads((ROOT/'evaluation/rubric.json').read_text())
+        self.rubric=json.loads((evaluation_path('rubric.json')).read_text())
         self.shot={'case':'test','width':100,'state':'diff','defaults':{'fg':0,'bg':0xffffff},'attrs':{1:{'foreground':0,'background':0xdddddd},2:{'foreground':0,'background':0xaaaaaa}},'cells':[{'row':0,'col':0,'text':'x','attr':1},{'row':0,'col':1,'text':'y','attr':2}], 'regions':[{'row':0,'col':0,'group':'DiffChange'},{'row':0,'col':1,'group':'DiffText'}]}
     def test_unreadable_text_lowers_score(self):
         original=score([self.shot],self.rubric)['diff']['score']
@@ -38,6 +39,6 @@ class ScorecardTests(unittest.TestCase):
         self.shot['cells'].append({'row':3,'col':0,'text':'|','attr':2})
         self.assertEqual(score([self.shot],self.rubric)['diff']['score'],original)
     def test_hue_difference_contributes_to_separation(self):
-        from score_themes import distance
+        from tintprobe.score_themes import distance
         self.assertGreater(distance(0xff0000,0x009400),20)
         self.assertEqual(distance(0xaabbcc,0xaabbcc),0)

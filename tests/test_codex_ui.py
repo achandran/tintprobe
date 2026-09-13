@@ -1,3 +1,4 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import copy
 import sys
 from pathlib import Path
@@ -5,8 +6,8 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
-from codex_ui import MODES, PLACEHOLDER, assess
-from ithilienlib import load_palette
+from tintprobe.codex_ui import MODES, PLACEHOLDER, assess
+from tintprobe.context import load_palette
 
 
 def records():
@@ -25,7 +26,7 @@ def records():
 
 
 def test_readable_clean_timed_stock_ui_passes():
-    result = assess(records(), load_palette('ithilien-dawn'))
+    result = assess(records(), load_palette())
     assert result['status'] == 'pass'
     assert result['captures'] == 48
     assert result['remaining_gaps']
@@ -52,7 +53,7 @@ def test_one_bad_animation_phase_cannot_hide_in_other_passing_frames(mutation):
     else:
         for r in rows:
             r['elapsed_ms'] = r['phase']
-    result = assess(rows, load_palette('ithilien-dawn'))
+    result = assess(rows, load_palette())
     assert result['status'] == 'fail'
 
 
@@ -60,7 +61,7 @@ def test_constant_dim_text_never_counts_as_verified_contrast():
     rows = records()
     for r in rows:
         r['cells'][0]['modifiers'] = 'DIM'
-    result = assess(rows, load_palette('ithilien-dawn'))
+    result = assess(rows, load_palette())
     assert result['status'] == 'unverified'
     assert result['findings'] == []
     assert len(result['unverified']) == 48
@@ -70,4 +71,4 @@ def test_missing_or_duplicate_frame_is_rejected():
     rows = records()
     for bad in (rows[:-1], rows[:-1]+[copy.deepcopy(rows[0])]):
         with pytest.raises(ValueError):
-            assess(bad, load_palette('ithilien-dawn'))
+            assess(bad, load_palette())

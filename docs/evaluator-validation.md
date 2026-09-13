@@ -1,6 +1,6 @@
 # Evaluator validation
 
-`uv run python scripts/validate_evaluator.py --output evaluation/results/validation`
+`uv run tintprobe validate --output evaluation/results/validation`
 
 The combined suite runs this automatically as a required stage. It captures native Neovim cells after applying temporary highlight overrides inside the isolated editor. It never edits the palette, installed themes, or existing screenshots.
 

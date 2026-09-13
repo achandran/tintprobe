@@ -1,0 +1,41 @@
+[
+  {
+    "id": "kanso-pearl",
+    "paths": [
+      "evaluation/deps/kanso"
+    ],
+    "pins": {
+      "evaluation/deps/kanso": "1afbbb449aa0254823dbe1932e3cbb51886ff9fe"
+    },
+    "setup": "vim.cmd('colorscheme kanso-pearl')",
+    "sources": {
+      "evaluation/deps/kanso": "https://github.com/webhooked/kanso.nvim"
+    }
+  },
+  {
+    "id": "gruvbox-material-light-soft",
+    "paths": [
+      "evaluation/deps/gruvbox-material"
+    ],
+    "pins": {
+      "evaluation/deps/gruvbox-material": "11d779b26a9ab2b3db8c22c6ac9fb6e8ed4fea79"
+    },
+    "setup": "vim.g.gruvbox_material_background='soft'; vim.g.gruvbox_material_foreground='original'; vim.cmd('colorscheme gruvbox-material')",
+    "sources": {
+      "evaluation/deps/gruvbox-material": "https://github.com/sainnhe/gruvbox-material"
+    }
+  },
+  {
+    "id": "modus-operandi",
+    "paths": [
+      "evaluation/deps/modus-themes"
+    ],
+    "pins": {
+      "evaluation/deps/modus-themes": "56233f0986ef6c8d0eab97e924e87144e584d970"
+    },
+    "setup": "vim.cmd('colorscheme modus_operandi')",
+    "sources": {
+      "evaluation/deps/modus-themes": "https://github.com/miikanissi/modus-themes.nvim"
+    }
+  }
+]

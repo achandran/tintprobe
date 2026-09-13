@@ -1,3 +1,4 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import json
 from pathlib import Path
 import sys
@@ -5,14 +6,14 @@ import sys
 from PIL import Image, ImageDraw, ImageFont
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from ghostty_glyphs import reference_sheet
-from ghostty_neovim import assess
-from ithilienlib import load_palette
+from tintprobe.ghostty_glyphs import reference_sheet
+from tintprobe.ghostty_neovim import assess
+from tintprobe.context import load_palette
 
 
 def test_live_cell_oracle_rejects_erased_edit_and_heavy_emphasis(tmp_path,monkeypatch):
-    import ghostty_quality
-    p=load_palette('ithilien-dawn')
+    import tintprobe.ghostty_quality as ghostty_quality
+    p=load_palette()
     g={'x':0,'y':0,'cell_width':12,'cell_height':24}
     monkeypatch.setattr(ghostty_quality,'grid',lambda *a:g)
     font=ImageFont.load_default_imagefont()
@@ -34,6 +35,10 @@ def test_live_cell_oracle_rejects_erased_edit_and_heavy_emphasis(tmp_path,monkey
     draw.rectangle((12,24,23,47),fill=p['backgrounds']['base']);im.save(image)
     shot['cells'][0]['bold']=True;cells.write_text(json.dumps(shot))
     assert assess(image,cells,p,(atlas,g))['status']=='fail'
+    from tintprobe.ghostty_neovim import CONFIG
+    with monkeypatch.context() as settings:
+        settings.setitem(CONFIG, 'contracts', {})
+        assert assess(image,cells,p,(atlas,g))['status']=='pass'
     shot['cells'][0]['bold']=False;cells.write_text(json.dumps(shot))
     draw.rectangle((0,24,11,47),fill=bg);im.save(image)
     assert assess(image,cells,p,(atlas,g))['status']=='fail'

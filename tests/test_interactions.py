@@ -1,8 +1,9 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 """Failure-sensitive checks for contextual role and native capture oracles."""
 import sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from evaluate_interactions import fzf_roles,fzf_oracle,pair,group_pairs
+from tintprobe.evaluate_interactions import fzf_roles,fzf_oracle,pair,group_pairs
 class Interactions(unittest.TestCase):
     def test_foreground_and_background_roles_are_not_interchangeable(self):
         r=fzf_roles('--color=light,bg:#FAFAF8,fg:#000000,bg+:#B8595C,fg+:#000000,prompt:#B8595C')
@@ -24,10 +25,10 @@ class Interactions(unittest.TestCase):
     def test_capture_timeout_kills_worker_group(self):
         import subprocess
         from unittest.mock import patch,MagicMock
-        from evaluate_interactions import isolated_capture
+        from tintprobe.evaluate_interactions import isolated_capture
         process=MagicMock(pid=12345)
         process.communicate.side_effect=[subprocess.TimeoutExpired('worker',15),('','')]
-        with patch('evaluate_interactions.subprocess.Popen',return_value=process), patch('evaluate_interactions.os.killpg') as kill:
+        with patch('tintprobe.evaluate_interactions.subprocess.Popen',return_value=process), patch('tintprobe.evaluate_interactions.os.killpg') as kill:
             with self.assertRaises(TimeoutError):isolated_capture({},100,'diagnostics')
             kill.assert_called_once()
 
@@ -35,10 +36,10 @@ class Interactions(unittest.TestCase):
 def test_history_oracle_uses_real_exact_matching():
     import shutil, subprocess, os
     import pytest
-    from evaluate_interactions import FZF_EXACT_QUERY,ROOT
+    from tintprobe.evaluate_interactions import FZF_EXACT_QUERY,ROOT
     fzf=shutil.which('fzf')
     if not fzf:pytest.skip('fzf executable unavailable')
-    source=(ROOT/'evaluation/fixtures/fzf/history.txt').read_text()
+    source=(evaluation_path('fixtures/fzf/history.txt')).read_text()
     output=subprocess.check_output([fzf,'--no-sort','--filter='+FZF_EXACT_QUERY[1:]],input=source,text=True,
         env={**os.environ,'FZF_DEFAULT_OPTS':'','FZF_DEFAULT_OPTS_FILE':''})
     assert output.splitlines()[0].startswith('3989 ')
@@ -46,7 +47,7 @@ def test_history_oracle_uses_real_exact_matching():
 
 
 def test_only_inactive_fzf_gutter_is_exempt():
-    from evaluate_interactions import assess
+    from tintprobe.evaluate_interactions import assess
     from copy import deepcopy
     shot={'case':'fzf','width':100,'state':'initial','defaults':{'fg':0,'bg':0xfafaf8},
           'attrs':{1:{'foreground':0xfafaf8,'background':0xfafaf8}},
@@ -61,7 +62,7 @@ def test_only_inactive_fzf_gutter_is_exempt():
 
 
 def test_active_pointer_cannot_be_hidden_or_removed():
-    from evaluate_interactions import assess
+    from tintprobe.evaluate_interactions import assess
     shot={'case':'fzf','width':100,'state':'initial','defaults':{'fg':0,'bg':0xfafaf8},
           'attrs':{1:{'foreground':0,'background':0xb8595c},2:{'foreground':0xb8595c,'background':0xb8595c}},
           'cells':[{'row':2,'col':2,'text':'3993','attr':1},{'row':2,'col':0,'text':'▌','attr':2}]}

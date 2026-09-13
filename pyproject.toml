@@ -1,24 +1,30 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "ithilien-theme"
+name = "tintprobe"
 version = "0.1.0"
-description = "Palette audits and theme generators for Ithilien"
+description = "Reproducible color scheme evaluation for editors and terminals"
 requires-python = ">=3.12"
-dependencies = [
-  "coloraide>=8.10,<9",
-  "pillow>=11,<13",
-  "pynvim>=0.6.0",
-]
+dependencies = ["coloraide>=8.10,<9", "pillow>=11,<13", "pynvim>=0.6.0"]
+
+[project.scripts]
+tintprobe = "tintprobe.cli:main"
 
 [dependency-groups]
-dev = [
-    "basedpyright==1.40.1",
-    "debugpy==1.8.21",
-    "pytest==9.1.1",
-]
+dev = ["pytest==9.1.1", "basedpyright==1.40.1", "debugpy==1.8.21"]
 
-[tool.uv]
-package = false
+[tool.setuptools.packages.find]
+include = ["tintprobe*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+tintprobe = ["data/**/*", "*.swift"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+
+[tool.setuptools.exclude-package-data]
+"*" = ["**/__pycache__/*", "**/*.pyc"]

@@ -1,0 +1,39 @@
+{
+  "source_commit": "b52f53f28763449c20c2a8a2df434b0138829bb2",
+  "modules": [
+    "aesthetic_score",
+    "agent_gates",
+    "analyze_ghostty_images",
+    "audit_failures",
+    "capture_ghostty",
+    "codex_flows",
+    "codex_native",
+    "codex_theme_adapters",
+    "codex_ui",
+    "compare_themes",
+    "evaluate_ghostty",
+    "evaluate_interactions",
+    "evaluate_suite",
+    "evaluate_theme",
+    "evaluation_checks",
+    "evaluation_dependencies",
+    "evaluation_gates",
+    "ghostty_coverage",
+    "ghostty_glyphs",
+    "ghostty_interactions",
+    "ghostty_neovim",
+    "ghostty_quality",
+    "ghostty_replay",
+    "ghostty_shell",
+    "overlay_checks",
+    "python_runtime",
+    "score_themes",
+    "validate_evaluator"
+  ],
+  "project_workflows": [
+    "evaluate_git_review",
+    "evaluate_installed_workflows",
+    "evaluate_pickers",
+    "evaluate_python_tools"
+  ]
+}

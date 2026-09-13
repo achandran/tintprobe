@@ -1,21 +1,10 @@
 .venv/
 __pycache__/
 *.pyc
-.DS_Store
-nvim.log
-extras/wallpapers/.ithilien-dynamic.heic-*
-
-evaluation/results/
-
-evaluation/deps/
-
 .pytest_cache/
-
-# Machine-local evaluation toolchain overrides
-evaluation/local.mk
-
-# Local context for terminal Codex
-/handoff.md
-
-# Legacy local comparison output; the manual comparison tool has been retired.
-/comparison/generated/
+*.egg-info/
+build/
+dist/
+evaluation/deps/
+evaluation/results/
+nvim.log

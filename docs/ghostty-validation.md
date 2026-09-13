@@ -3,15 +3,15 @@
 This stage is under development. It never counts prepared ANSI output or a
 calibration-only screenshot as full native acceptance.
 
-Use `make evaluate-headless` while working on this computer. Use
-`make evaluate-offline GHOSTTY_OUTPUT=PATH` to recheck saved screenshots with no
+Use `uv run tintprobe compare` while working on this computer. Use
+`uv run tintprobe images --output PATH` to recheck saved screenshots with no
 desktop interaction. Foreground capture requires an idle desktop: concurrent
 typing, clicking, or switching Spaces can invalidate focus, selection, and
 cursor evidence. A separate test Mac is the strongest option for unattended
 native coverage. Headless or saved-image passes do not replace that final layer.
 
-`make evaluate` prepares real Git status, Git diff, single-character Git word
-diff, ripgrep, the generated zsh prompt, and pytest output in a disposable repository. Pytest deliberately
+`uv run tintprobe suite` prepares real Git status, Git diff, single-character Git word
+diff, ripgrep, the optional project-configured zsh prompt, and pytest output in a disposable repository. Pytest deliberately
 runs one passing and one failing Python test. A separate labeled probe covers
 ANSI 0–15 and dim text. The palette remains frozen. No installed configuration,
 user repository, shell history, or application data is changed.
@@ -22,9 +22,9 @@ On a macOS host where native UI automation is authorized and Screen Recording
 is already available, run:
 
 ```sh
-uv run --locked python scripts/evaluate_ghostty.py --capture
+uv run tintprobe ghostty --capture
 # Or include it in the combined suite:
-make evaluate GHOSTTY_ARGS=--ghostty-capture
+uv run tintprobe suite --ghostty-capture
 ```
 
 The worker compiles a small Swift helper, checks capture permission without
@@ -46,9 +46,7 @@ selection, or readability. Actual screenshots are linked in the gallery when
 captured. The report remains `incomplete`, with a nonzero acceptance exit,
 until those additional gates exist. Partial failures remain visible.
 
-An earlier Computer Use session explicitly denied Ghostty access. Such a denial
-must not be bypassed with another capture mechanism in that session. Native
-execution requires authorization in the environment running it. Preparing
+Native execution requires authorization in the environment running it. Preparing
 fixtures and testing the evaluator's logic require no native app access.
 
 ## Remaining acceptance work
@@ -66,12 +64,12 @@ No comfort or Claude Code validation is claimed by this stage.
 
 ## Running from a regular checkout
 
-Use `make evaluate-ghostty` to test only Ghostty. It does not require the pinned
-Kanso, Codex, or Tree-sitter source repositories used by the full evaluation.
-`make evaluate-ghostty GHOSTTY_CAPTURE=` prepares fixtures without launching UI.
+Use `uv run tintprobe ghostty --capture` to test only Ghostty. Selected native cases require their configured theme and application dependencies.
+A project palette and Ghostty port must be configured; see [profiles](profiles.md).
+`uv run tintprobe ghostty` prepares fixtures without launching UI.
 Both currently exit nonzero because native acceptance is incomplete, even if
 all available calibration checks pass. Inspect `evaluation/results/ghostty/report.json`
-for the precise status. The full `make evaluate` still requires its documented
+for the precise status. The full `uv run tintprobe suite` still requires its documented
 pinned dependencies; this target does not install them.
 
 Startup diagnostics distinguish an unstarted launcher, a failed child process,
@@ -86,7 +84,7 @@ Native runs now also produce `quality.html` and `quality.json`. To analyze
 existing screenshots without launching or capturing any app:
 
 ```sh
-make evaluate-ghostty-images
+uv run tintprobe images
 ```
 
 The analyzer locates the six calibration bars to infer the terminal grid, parses
@@ -152,7 +150,7 @@ reference sheet. Normal command text checks still apply to the rest of the row.
 Missing fill, an outline cursor, erased or replaced glyphs cannot pass this gate.
 The JSON report records cursor evidence separately from command text evidence.
 
-Run `make evaluate-ghostty` to capture this case. Previous captures do not
+Run `uv run tintprobe ghostty --capture` to capture this case. Previous captures do not
 establish coverage for newly added interactions.
 
 ### Cursor modes and real mouse selection
@@ -215,14 +213,14 @@ cursor and selection case counts separately from full native acceptance.
 Prefer a short acquisition while developing checks:
 
 ```sh
-make evaluate-ghostty GHOSTTY_OUTPUT=evaluation/results/native-smoke \
-  GHOSTTY_CAPTURE="--capture --cases git-status cursor-block selection-single neovim-diff"
+uv run tintprobe ghostty --output evaluation/results/native-smoke \
+  --capture --cases git-status cursor-block selection-single neovim-diff
 ```
 
 The glyph reference is included automatically. `omitted_cases` explicitly lists
 what was left out; a targeted run never establishes complete coverage. The
 window closes before the more expensive offline analysis starts. Reuse saved
-images with `make evaluate-ghostty-images GHOSTTY_OUTPUT=...`; this does not open
+images with `uv run tintprobe images --output ...`; this does not open
 Ghostty. Reanalysis updates `report.json` and its quality hash as well as
 `quality.json`, so headline counts no longer describe an obsolete analysis.
 A changed theme still requires fresh captures.

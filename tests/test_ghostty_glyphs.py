@@ -1,8 +1,9 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 from PIL import Image, ImageDraw, ImageFont
-from ghostty_glyphs import reference_sheet, templates_from_capture, recognize_rows, mask, classify, recover_content
+from tintprobe.ghostty_glyphs import reference_sheet, templates_from_capture, recognize_rows, mask, classify, recover_content
 
 G={'x':0,'y':0,'cell_width':12,'cell_height':24}
 FONT=ImageFont.load_default(size=16)

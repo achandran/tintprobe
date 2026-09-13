@@ -1,7 +1,8 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import unittest,sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from agent_gates import assess
+from tintprobe.agent_gates import assess
 class AgentGates(unittest.TestCase):
     def palette(self):return {'foregrounds':{'text':'#000000'},'backgrounds':{'base':'#FFFFFF'},'ansi':{str(i):'#000000' for i in range(16)}}
     def record(self):return {'file':'test-stage','width':60,'cells':[{'row':0,'col':0,'text':'x','fg':'Reset','bg':'Reset','modifiers':'NONE'}]}

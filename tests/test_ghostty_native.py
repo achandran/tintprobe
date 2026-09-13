@@ -1,10 +1,11 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import json
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
-from capture_ghostty import pixel_gate
-from evaluate_ghostty import prepare
+from tintprobe.capture_ghostty import pixel_gate
+from tintprobe.evaluate_ghostty import prepare
 
 
 def test_blank_or_wrong_capture_fails_calibration():
@@ -31,7 +32,7 @@ def test_real_command_fixtures_are_not_native_validation(tmp_path):
 
 
 def test_capture_failure_remains_blocked(tmp_path, monkeypatch):
-    import capture_ghostty
+    import tintprobe.capture_ghostty as capture_ghostty
     def denied(*args):
         raise RuntimeError('Screen Recording permission is unavailable')
     monkeypatch.setattr(capture_ghostty, 'capture', denied)
@@ -43,7 +44,7 @@ def test_capture_failure_remains_blocked(tmp_path, monkeypatch):
 
 def test_capture_subprocess_stderr_is_preserved(tmp_path, monkeypatch):
     import subprocess
-    import capture_ghostty
+    import tintprobe.capture_ghostty as capture_ghostty
     def denied(*args):
         raise subprocess.CalledProcessError(1, ['helper', 'windows'],
             stderr=b'Screen Recording permission is unavailable\n')
@@ -55,7 +56,7 @@ def test_capture_subprocess_stderr_is_preserved(tmp_path, monkeypatch):
 
 def test_launcher_handles_spaces_without_optional_python_imports(tmp_path):
     import subprocess
-    from capture_ghostty import write_launcher
+    from tintprobe.capture_ghostty import write_launcher
     output=tmp_path/'space and apostrophe\x27s directory'
     output.mkdir()
     payload=output/'payload.ansi';payload.write_bytes(b'hello\n')
@@ -72,7 +73,7 @@ def test_launcher_handles_spaces_without_optional_python_imports(tmp_path):
 
 
 def test_timeout_distinguishes_child_and_window_errors(tmp_path):
-    from capture_ghostty import timeout_reason
+    from tintprobe.capture_ghostty import timeout_reason
     ready,started,log=[tmp_path/x for x in ('ready','started','log')]
     assert 'did not start' in timeout_reason(ready,started,log)
     started.touch();log.write_text('ModuleNotFoundError: dependency')

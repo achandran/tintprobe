@@ -1,7 +1,8 @@
+from tintprobe.context import ROOT as TEST_ROOT, evaluation_path, project_resource, EVALUATION, port_path
 import copy,sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from overlay_checks import overlay_failures
+from tintprobe.overlay_checks import overlay_failures
 
 class OverlayChecks(unittest.TestCase):
     def setUp(self):
